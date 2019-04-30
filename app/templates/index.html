@@ -1,15 +1,47 @@
-{% extends "base.html" %}
+{% extends 'base.html'%}
+{% block styles%} {{ super() }}
+<link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}"> {% endblock %}
 {% block content %}
-    {% for post in posts %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="#">{{ post.author }}</a>
-              <small class="text-muted">{{ post.date_posted }}</small>
-            </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
-          </div>
-        </article>
-    {% endfor %}
-{% endblock content %}
+
+<body style="background-color: #FAEE90  ;">
+
+  <div class="jumbotron text-center">
+
+    <h1 class="display-2">" World"</h1><br>
+    <small><h4>Express yourself..</h4></small>
+    <div class="btn-group mt-2" role="group" aria-label="Basic example">
+
+      <a class="btn btn-primary btn-lg" href="/subscribe">Subscribe</a>
+
+  </div>
+</div>
+<div>
+  <div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto" >
+      {% for blog in blogs %}
+      <div class="preview">
+        <a href="blog/new/{{ blog.id }}">
+        <h2 class="title">{{ blog.title }}</h2></a>
+        <p>{{blog.topic}}</p>
+        <p>{{ blog.content}}</p>
+        <small><p>Posted by {{blog.author }} on {{ blog.date.strftime('%B %d, %Y') }}</p></small>
+      </div>
+      <hr>
+      {% endfor %}
+      <hr>
+    </div>
+  </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <p class="copyright text-muted">Copyright &copy;"Bloggers World!, get into Blogging" 2019</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  {% endblock%}
+</body
