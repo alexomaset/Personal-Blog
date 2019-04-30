@@ -1,7 +1,14 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField,TextAreaField,SubmitField, SelectField
 
-class BlogForm(FlaskForm):
+
+class ReviewForm(FlaskForm):
+
+    title = StringField('Write your comment here',validators=[Required()])
+    review = TextAreaField('Blog review')
+    submit = SubmitField('Submit')
+
+class PostForm(FlaskForm):
 
     title = StringField('Blog title')
     category_id = SelectField
@@ -10,11 +17,12 @@ class BlogForm(FlaskForm):
 
 
 class CommentForm(FlaskForm):
-
     title = StringField('Comment Title')
     comment = TextAreaField('Post Of The Comment')
     submit = SubmitField('Submit')
 
+class DeleteBlog(FlaskForm):
+    delete=SubmitField("Delete this Blog")    
 
 class UpdateProfile(FlaskForm):
     bio = TextAreaField('Tell us about you.')

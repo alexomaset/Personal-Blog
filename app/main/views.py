@@ -1,38 +1,66 @@
-from flask import render_template, request, redirect,url_for, abort, flash
+from flask import render_template,request,redirect,url_for,abort
 from . import main
-from .forms import PitchForm, UpdateProfile, CommentForm
-from ..models import Blog, User, Comment
-from flask_login import login_required, current_user
-from .. import db, photos
-import markdown2
+from ..models import Review,User
+from .forms import ReviewForm,UpdateProfile,BlogForm
+from flask_login import login_required,current_user
+from .. import db,photos
+import markdown2  
 
-# INDEX PAGE
+
+# Views
 @main.route('/')
 def index():
-    """ View root page function that returns index page """
 
-    # category = Category.get_categories()
-    blogs = Blog.query.all()
+    '''
+    View root page function that returns the index page and its data
+    '''
+    return render_template('index.html')
 
-    title = 'WELCOME TO Personal Blog'
-    return render_template('index.html', title = title, blog=blog)
 
-# VIEWING EACH SPECIFIC PROFILE
-@main.route('/user/<uname>')
+@main.route('/blog/review/new/<int:id>', methods = ['GET','POST'])
 @login_required
-def profile(uname):
-    user = User.query.filter_by(username = uname).first()
+def new_review(id):
+    form = ReviewForm()
+    blog = get_blog(id)
 
+    if form.validate_on_submit():
+        title = form.title.data
+        review = form.review.data
+
+        #Updated review instance
+        new_review = Review(blog_id=blog_id,blog_title=blog_title,blog_review=review,user=current_user)
+
+        #save review method
+        new_review.save_review()
+        return redirect(url_for('.blog',id = blog.id ))
+
+    title = f'{blog.title} review'
+    return render_template('new_review.html',title = title, review_form=form, blog=blog)    
+
+@main.route('/blog/<int:id>')
+def blog(id):
+
+    '''
+    View blog page function that returns the blog details page and its data
+    '''
+    blog = get_blog(id)
+    title = f'{blog.title}'
+    reviews = Review.get_reviews(blog.id)
+
+    return render_template('blog.html',title = title,blog = blog,reviews = reviews) 
+
+@main.route("/profile/<uname>")
+def profile(uname):
+    user=User.query.filter_by(username = uname).first()
     if user is None:
         abort(404)
 
-    return render_template("profile/profile.html", user = user)
+    return render_template("profile/profile.html",user=user)    
 
-# UPDATING PROFILE
-@main.route('/user/<uname>/update',methods = ['GET','POST'])
+@main.route('/profile/<uname>/update',methods = ['GET','POST'])
 @login_required
 def update_profile(uname):
-    user = User.query.filter_by(username=uname).first()
+    user = User.query.filter_by(username = uname).first()
     if user is None:
         abort(404)
 
@@ -40,7 +68,7 @@ def update_profile(uname):
 
     if form.validate_on_submit():
         user.bio = form.bio.data
-
+       
         db.session.add(user)
         db.session.commit()
 
@@ -48,7 +76,6 @@ def update_profile(uname):
 
     return render_template('profile/update.html',form =form)
 
-# UPDATING PICTURE
 @main.route('/user/<uname>/update/pic',methods= ['POST'])
 @login_required
 def update_pic(uname):
@@ -60,137 +87,28 @@ def update_pic(uname):
         db.session.commit()
     return redirect(url_for('main.profile',uname=uname))
 
-# ADDING A NEW PITCH
-@main.route('/pitch/new', methods=['GET','POST'])
+@main.route('/review/<int:id>')
+def single_review(id):
+    review=Review.query.get(id)
+    if review is None:
+        abort(404)
+    format_review = markdown2.markdown(review.movie_review,extras=["code-friendly", "fenced-code-blocks"])
+    return render_template('review.html',review = review,format_review=format_review)    
+
+@main.route('/blog/new', methods =['GET','POST'])
 @login_required
-def new_pitch():
-    form = PitchForm()
+def new_blog():
 
-    if form.validate_on_submit():
-
-        title=form.title.data
-        content=form.content.data
-        category_id=form.category_id.data
-        pitch = Pitch(title=title,
-                      content=content,
-                      category_id=category_id,
-                      user=current_user)
-
-        db.session.add(pitch)
-        db.session.commit()
-
-        # pitch.save_pitch(pitch)
-        print('kasambuli')
-        flash('Your pitch has been created!', 'success')
-        return redirect(url_for('main.single_pitch',id=pitch.id))
-
-    return render_template('newpitch.html', title='New Post', pitch_form=form, legend='New Post')
-
-# VIEW INDIVIDUAL PITCH
-@main.route('/pitch/new/<int:id>')
-def single_pitch(id):
-    pitch = Pitch.query.get(id)
-    return render_template('singlepitch.html',pitch = pitch)
-
-@main.route('/allpitches')
-def pitch_list():
-    # Function that renders the business category pitches and its content
-
-    pitches = Pitch.query.all()
-
-    return render_template('pitches.html', pitches=pitches)
-
-
-# VIEWING A PITCH WITH COMMENTS AND COMMENTFORM
-@main.route('/pitch/<int:pitch_id>/',methods=["GET","POST"])
-def pitch(pitch_id):
-    pitch = Pitch.query.get(pitch_id)
-    form = CommentForm()
-    if form.validate_on_submit():
-        title = form.title.data
-        comment = form.comment.data
-        new_pitch_comment = Comment(post_comment=comment,
-                                    pitches=pitch_id,
-
-                                    # user_id=current_user.id,
-                                    user=current_user)
-        # new_post_comment.save_post_comments()
-
-
-        db.session.add(new_pitch_comment)
-        db.session.commit()
-    comments = Comment.query.all()
-    return render_template('pitchlink.html', title=pitch.title,
-                           pitch=pitch,
-                           pitch_form=form,
-                           comments=comments)
-
-# ADDING A NEW COMMENT TO A PITCH
-@main.route('/pitch/comment/new/<int:id>', methods = ['GET','POST'])
-@login_required
-def new_comment(id):
-    '''
-    view category that returns a form to create a new comment
-    '''
-    form = CommentForm()
-    pitch = Pitch.query.filter_by(id = id).first()
+    form = BlogForm()
 
     if form.validate_on_submit():
         title = form.title.data
-        comment = form.comment.data
+        description = form.description.data
+        author = form
+        user = current_user
+        blog = Blog(title = form.title.data, author = form.author.data, description = form.description.data)
 
-        # comment instance
-        new_comment = Comment(pitch_id = pitch.id, post_comment = comment, title=title, user = current_user)
-
-        # save comment
-        new_comment.save_comment()
-
-        return redirect(url_for('.pitches', id = pitch.id ))
-
-    title = f'{pitch.title} comment'
-    return render_template('newcomment.html', title = title, comment_form = form, pitch = pitch, )
-
-# UPDATING A PITCH
-
-@main.route('/pitch/<int:pitch_id>/update', methods=['GET','POST'])
-@login_required
-def update_pitch(pitch_id):
-    pitch = Pitch.query.get_or_404(pitch_id)
-    if pitch.author != current_user:
-        abort(403)
-    form = PitchForm()
-    if form.validate_on_submit():
-        pitch.title = form.title.data
-        pitch.content = form.content.data
+        db.session.add(new_blog)
         db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('main.pitchlink', pitch_id=pitch.id))
-    elif request.method == 'GET':
-        form.title.data = pitch.title
-        form.content.data = pitch.content
-    return render_template('newpitch.html', title='Update Pitch', form=form, legend='Update Pitch')
-
-# DELETING A PITCH
-@main.route('/pitch/<int:pitch_id>/delete', methods=['GET', 'POST'])
-@login_required
-def delete_pitch(pitch_id):
-    pitch = Pitch.query.get_or_404(pitch_id)
-    for comment in pitch.comments.all():
-        db.session.delete(comment)
-        db.session.commit()
-    if pitch.author != current_user:
-        abort(403)
-    db.session.delete(pitch)
-    db.session.commit()
-    flash('Your pitch has been deleted!', 'success')
-    return redirect(url_for('main.pitches'))
-
-# VIEWING A SPECIFIC PITCH
-@main.route("/view/<id>", methods=["GET","POST"])
-def view_pitch(id):
-    pitch = Pitch.query.get(id)
-    if request.args.get("vote"):
-       pitch.likes = pitch.likes + 1
-       pitch.save_pitch()
-       return redirect("/view/{pitch_id}".format(pitch_id=id))
-    return render_template('viewpitch.html',pitch = pitch)
+        return redirect(url_for('main.blog'),blogs=blogs)
+    return render_template('new_blog.html', form=form)
