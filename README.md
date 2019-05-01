@@ -37,10 +37,9 @@ Link to live site
 Here is a link to the live site https://pitchalex.herokuapp.com/
 
 ## Contact Me
-email:alexomaset711@gmail.com
+* email:alexomaset711@gmail.com
 
 ## License & Copyright information
 Copyright (c) Alexomaset
-Message Input
-
+MIT
 
