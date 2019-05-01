@@ -40,6 +40,6 @@ Here is a link to the live site https://pitchalex.herokuapp.com/
 * email:alexomaset711@gmail.com
 
 ## License & Copyright information
-Copyright (c) Alexomaset
-MIT
+* Copyright (c) Alexomaset
+* MIT
 
