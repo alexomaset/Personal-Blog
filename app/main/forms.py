@@ -1,24 +1,22 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,TextAreaField,SubmitField
-from wtforms.validators import Required
+from wtforms import StringField, TextAreaField, SubmitField, SelectField
+from wtforms.validators import Required,Email
 
 class UpdateProfile(FlaskForm):
-    bio = TextAreaField('Tell us about yourself.',validators = [Required()])
+    bio = TextAreaField('Tell us something about you.',validators = [Required()])
     submit = SubmitField('Submit')
 
 class BlogForm(FlaskForm):
-    title = StringField('Blog Title')
-    topic = StringField('Topic')
-    content = TextAreaField('Blog Content')
-    submit = SubmitField('Submit')
+    title = StringField('Blog Title',validators=[Required()])
+    blog_body = TextAreaField('Write Blog Content',validators=[Required()])
+    blog_category = SelectField('Blog Category',choices=[('Sports-Blog','Sports'),('Travel-Blog','Travel'),('Fitness-Blog','Fitness'),('Fashion-Blog','Fashion'),('Food-Blog','Food'),('Political-Blog','Politics')],validators=[Required()])
+    submit = SubmitField('Submit Blog')
 
 class CommentForm(FlaskForm):
+    name = StringField('Enter Your Name',validators=[Required()])
+    comment = TextAreaField('Comments', validators=[Required()])
+    submit = SubmitField('Submit Comment')
 
-    comment = TextAreaField('Comment')
-    submit = SubmitField('Post Comments')
-
-class SubscriberForm(FlaskForm):
-
-    email = StringField('Your Email Address')
-    name = StringField('Enter your name',validators = [Required()])
-    submit = SubmitField('Subscribe')
+class SubscribeForm(FlaskForm):
+    subscriber_name = StringField('Enter your Full Name',validators=[Required()])
+    subscriber_email = StringField('Enter your Email',validators=[Required(),Email()])

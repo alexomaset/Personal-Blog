@@ -1,47 +1,54 @@
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #905018;">
-        <a class="navbar-brand" href="/">Blog Spot</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a><br>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/blogposts">Blogs</a>
-            </li>
-            </ul>
-            </div>
-      
-      
-      <div>
-          <ul class="nav navbar-nav navbar-right">
-            {% if current_user.is_authenticated %}
-            {% if current_user.is_admin %}
-                <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
-              </li>
-      
-            {% else %}
-              <  <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
-              </li>
-            {% endif %}
-              <li class="nav-item">
-              <a class="nav-link" href="{{url_for('main.profile',uname=current_user.author)}}">Profile</a>
-            </li>
-              <li class="nav-item">
-              <a class="nav-link" href="{{url_for('auth.logout')}}">Sign out</a>
-            </li>
-            {% else %}
-              <li class="nav-item">
-              <a class="nav-link" href="{{url_for('auth.login')}}">Sign in</a>
-            </li>
-            {%endif%}
-          </ul>
-        </div>
-      </nav>
-      
+<nav class="mb-1 navbar navbar-expand-lg navbar-brand navsize">
+    <a class="navbar-brand" href="/">Blog</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-333"
+      aria-controls="navbarSupportedContent-333" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent-333">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Home
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('main.latest_blogs')}}">Latest Posts</a>
+          </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('main.travel')}}">Travel</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url_for('main.fitness')}}">Fitness</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{url_for('main.fashion')}}">Fashion</a>
+        </li>
+       
+          {% if current_user.is_authenticated %}
+           <li class="nav-item"><a class="nav-link" href="{{url_for('main.new_blog')}}">Create Blog</a></li>
+          {% endif %}
+      </ul>
+      <ul class="navbar-nav ml-auto nav-flex-icons">
+          {% if current_user.is_authenticated %}
+          <li><a href="{{url_for('main.profile',uname=current_user.username)}}">Profile</a></li>
+          <li style="font-weight: bold;font-style: italic;padding-left:10px;padding-right:10px;">{{current_user.username}}</li>
+          <li><a href="{{url_for('auth.logout')}}">Log out</a></li>
+          {% else %}
+        <li class="nav-item">
+          <a class="nav-link waves-effect waves-light" href="{{url_for('auth.register')}}">
+            <i class="fas fa-user">Register</i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link waves-effect waves-light" href="{{url_for('auth.login')}}">
+              <i class="fas fa-sign-out-alt">Log in</i>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  </nav>
+  <!--/.Navbar -->

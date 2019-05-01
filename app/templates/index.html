@@ -1,47 +1,51 @@
-{% extends 'base.html'%}
-{% block styles%} {{ super() }}
-<link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}"> {% endblock %}
-{% block content %}
-
-<body style="background-color: #FAEE90  ;">
-
-  <div class="jumbotron text-center">
-
-    <h1 class="display-2">" World"</h1><br>
-    <small><h4>Express yourself..</h4></small>
-    <div class="btn-group mt-2" role="group" aria-label="Basic example">
-
-      <a class="btn btn-primary btn-lg" href="/subscribe">Subscribe</a>
-
-  </div>
+{% extends 'base.html' %} {% import 'macros.html' as macro%} {% block content %} {% for alert in get_flashed_messages() %}
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    {{ alert }}
 </div>
-<div>
-  <div class="row">
-    <div class="col-lg-8 col-md-10 mx-auto" >
-      {% for blog in blogs %}
-      <div class="preview">
-        <a href="blog/new/{{ blog.id }}">
-        <h2 class="title">{{ blog.title }}</h2></a>
-        <p>{{blog.topic}}</p>
-        <p>{{ blog.content}}</p>
-        <small><p>Posted by {{blog.author }} on {{ blog.date.strftime('%B %d, %Y') }}</p></small>
-      </div>
-      <hr>
-      {% endfor %}
-      <hr>
-    </div>
-  </div>
-  </div>
+{% endfor %}
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-          <p class="copyright text-muted">Copyright &copy;"Bloggers World!, get into Blogging" 2019</p>
-        </div>
-      </div>
+
+
+    <div class="jumbotron">
+        <h4>Travel Blogs</h4>
     </div>
-  </footer>
-  {% endblock%}
-</body
+    <div class="card-body text-primary">
+        <h5 class="card-title">Get the Latest Travel Articles</h5>
+        <p class="card-text"></p>
+    </div>
+    <div class="border-primary">
+        <a href="/blogs/travel" class="btn btn-info float-center">View Blogs</a>
+    </div>
+
+
+<div class="jumbotron">
+    <div class="card-header bg-transparent border-primary">
+        <h4>Fitness Blogs</h4>
+    </div>
+    <div class="card-body text-primary">
+        <div class="jumbotron>
+      <h5 class=" card-title ">Get the Best Fitness Articles</h5>
+      <p class="card-text "> </p>
+    </div>
+    </div>
+    <div class="bg-transparent border-primary "><a href="/blogs/fitness " class="btn btn-info float-center ">View Blogs</a></div>
+</div>
+</div>
+<div class="card-deck">
+<div class="card border-primary display ">
+    <div class="card-header bg-transparent border-primary "><h4>Fashion Blogs</h4></div>
+    <div class="card-body text-primary ">
+      <h5 class="card-title ">Fashion Articles</h5>
+      <p class="card-text "> </p>
+    </div>
+    <div class="bg-transparent border-primary "><a href="/blogs/fashion " class="btn btn-info float-center ">View Blogs</a></div>
+</div>
+
+</div>
+</div>
+
+    
+        </div>
+        
+      {% endblock%}
