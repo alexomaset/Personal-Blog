@@ -5,12 +5,12 @@ from .. import db,photos
 from ..models import User,Blog,Comment,Subscriber
 from flask_login import login_required,current_user
 from .. import db,photos
-import requests
+
 import json
 
 @main.route('/')
 def index():
-    random = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()
+    # random = requests.get('http://quotes.stormconsultancy.co.uk/random.json').json()
 
 
     
