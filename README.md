@@ -9,8 +9,6 @@ Blog is a flask web application meant for users to post various blog contents on
 * Fitnes
 * Fashion
 
-an create and share their opinions while other users can read and comment on the blogs.
-Registered users c
 
 ## Project Setup instructions
 Use the following commands to use this project.
@@ -26,7 +24,8 @@ Use the following commands to use this project.
 * code . //For those using Visual Studio editor.
 * Run ./start.sh
 * Access the application on this localhost address http://127.0.0.1:5000
-##Technologies used
+
+## Technologies used
 
 1. Python 3.6
 2. Bootstrap
